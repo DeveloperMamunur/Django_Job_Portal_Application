@@ -22,7 +22,11 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    role = request.user.profile.role
+    if role == 'employer':
+        return redirect('employer_dashboard')
+    else:
+        return redirect('applicant_dashboard')
 
 @login_required
 def LogoutView(request):

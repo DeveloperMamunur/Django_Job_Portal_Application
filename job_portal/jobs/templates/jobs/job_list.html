@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Available Jobs</h2>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" class="d-flex">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search jobs by title, company, or location..." class="form-control me-2">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    {% if query %}
+        <p class="text-muted">Search results for "{{ query }}"</p>
+    {% endif %}
+
+    {% if jobs %}
+        <div class="row">
+            {% for job in jobs %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ job.title }}</h5>
+                            <p class="card-text">
+                                <strong>{{ job.company_name }}</strong><br>
+                                <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
+                                <small class="text-muted">Posted: {{ job.created_at|date:"M d, Y" }}</small>
+                            </p>
+                            <p class="card-text">{{ job.description|truncatewords:20 }}</p>
+                            <a href="{% url 'job_detail' job.id %}" class="btn btn-primary">View Details</a>
+                            <a href="{% url 'apply_job' job.id %}" class="btn btn-success">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No jobs found{% if query %} for "{{ query }}"{% endif %}.</p>
+    {% endif %}
+{% endblock %}

@@ -1,5 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    home page content
-{% endblock content %}
+    <div class="jumbotron bg-light p-5 rounded">
+        <h1 class="display-4">Welcome to Job Portal</h1>
+        <p class="lead">Find your dream job or hire the perfect candidate.</p>
+        {% if not user.is_authenticated %}
+            <a class="btn btn-primary btn-lg me-2" href="{% url 'register' %}">Get Started</a>
+            <a class="btn btn-outline-primary btn-lg" href="{% url 'job_list' %}">Browse Jobs</a>
+        {% else %}
+            <a class="btn btn-primary btn-lg" href="{% url 'dashboard' %}">Go to Dashboard</a>
+        {% endif %}
+    </div>
+
+    <div class="row mt-5">
+        {% if not user.is_authenticated or user.is_authenticated and user.profile.role == 'applicant' %}
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">For Applicant</h5>
+                        <p class="card-text">Browse thousands of job opportunities and apply with ease.</p>
+                        {% if user.is_authenticated and user.profile.role == 'applicant' %}
+                            <a href="{% url 'job_list' %}" class="btn btn-primary">Browse Jobs</a>
+                        {% else %}
+                            <a href="{% url 'register' %}" class="btn btn-primary">Applicant Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if not user.is_authenticated or user.is_authenticated and user.profile.role == 'employer' %}
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">For Employers</h5>
+                        <p class="card-text">Post job openings and find qualified candidates.</p>
+                        {% if user.is_authenticated and user.profile.role == 'employer' %}
+                            <a href="{% url 'post_job' %}" class="btn btn-primary">Post a Job</a>
+                        {% else %}
+                            <a href="{% url 'register' %}" class="btn btn-primary">Employer Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

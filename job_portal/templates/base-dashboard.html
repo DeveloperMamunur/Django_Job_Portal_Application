@@ -22,11 +22,24 @@
         <!-- Navigation -->
         <nav class="nav nav-pills flex-column mb-auto">
             <div class="nav-section-title mb-2 text-muted">Main</div>
-            <a href="" 
-                class="nav-link active">
-                <i class="bi bi-house-door me-2"></i>
-                <span class="nav-text">Overview</span>
-            </a>
+            {% if user.is_authenticated and user.profile.role == 'employer' %}
+                <a href="{% url 'employer_dashboard' %}" 
+                    class="nav-link {% if request.resolver_match.url_name == 'employer_dashboard' %}active{% endif %}">
+                    <i class="bi bi-house-door me-2"></i>
+                    <span class="nav-text">Overview</span>
+                </a>
+                <a href="{% url 'post_job' %}" 
+                    class="nav-link {% if request.resolver_match.url_name == 'post_job' %}active{% endif %}">
+                    <i class="bi bi-file-earmark-plus me-2"></i>
+                    <span class="nav-text">Post Job</span>
+                </a>
+            {% else %}
+                <a href="{% url 'applicant_dashboard' %}" 
+                    class="nav-link {% if request.resolver_match.url_name == 'applicant_dashboard' %}active{% endif %}">
+                    <i class="bi bi-house-door me-2"></i>
+                    <span class="nav-text">Overview</span>
+                </a>
+            {% endif %}
         </nav>
         
         <!-- User Profile -->

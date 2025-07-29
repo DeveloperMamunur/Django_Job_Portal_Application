@@ -1,0 +1,39 @@
+{% extends 'base-dashboard.html' %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Employer Dashboard</h2>
+        <a href="{% url 'post_job' %}" class="btn btn-primary">Post New Job</a>
+    </div>
+
+    {% if jobs %}
+        <div class="row">
+            {% for job in jobs %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ job.title }}</h5>
+                            <p class="card-text">{{ job.company_name }} - {{ job.location }}</p>
+                            <p class="text-muted">Posted: {{ job.created_at|date:"M d, Y" }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <a href="{% url 'dashboard_job_details' job.id %}" class="btn btn-outline-primary btn-sm me-2">View Details</a>
+                                    <a href="{% url 'job_applicants' job.id %}" class="btn btn-success btn-sm">View Applicants</a>
+                                </div>
+                                <div>
+                                    <a href="{% url 'edit_job_post' job.id %}" class="btn btn-warning btn-sm me-2">Edit Job</a>
+                                    <a href="{% url 'delete_job_post' job.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't posted any jobs yet. <a href="{% url 'post_job' %}">Post your first job</a></p>
+    {% endif %}
+{% endblock %}

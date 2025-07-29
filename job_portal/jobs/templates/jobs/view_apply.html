@@ -1,0 +1,23 @@
+{% extends 'base-dashboard.html' %}
+
+{% block content %}
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    {% if application.resume %}
+                        <iframe src="{% url 'view_resume' application.id %}" width="100%" height="500px" frameborder="0"></iframe>
+                    {% else %}
+                        <p>No resume uploaded.</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Cover Letter:</strong> {{ application.cover_letter|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

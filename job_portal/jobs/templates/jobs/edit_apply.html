@@ -1,0 +1,39 @@
+{% extends 'base-dashboard.html' %}
+{% load custom_tags %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Apply for {{ job.title }}</h3>
+                    <p class="mb-0 text-muted">{{ job.company_name }} - {{ job.location }}</p>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+
+                        <div class="mb-3">
+                            {{ form.cover_letter.label_tag }}
+                            {{ form.cover_letter }}
+                            {{ form.cover_letter.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_resume">Resume (PDF/DOC)</label><br>
+
+                            {% if form.instance.resume %}
+                                <p>Current file: <a href="{{ form.instance.resume.url }}" target="_blank">{{ form.instance.resume.name|basename }}</a></p>
+                            {% endif %}
+
+                            {{ form.resume }}
+                            {{ form.resume.errors }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Update Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
