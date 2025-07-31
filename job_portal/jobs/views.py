@@ -61,6 +61,7 @@ def job_list(request):
     return render(request, 'jobs/job_list.html', {'jobs': jobs, 'query': query})
 
 
+@login_required
 def edit_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     
@@ -89,6 +90,7 @@ def job_details(request, job_id):
     
     return render(request, 'jobs/job_detail.html', {'job': job, 'has_applied': has_applied})
 
+@login_required
 def dashboard_job_details(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     
@@ -105,6 +107,7 @@ def dashboard_job_details(request, job_id):
     
     return render(request, 'jobs/dashboard_job_details.html', context)
 
+@login_required
 def delete_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     
@@ -166,12 +169,13 @@ def edit_apply(request, job_id):
         'edit': True,
     })
 
-
+@login_required
 def view_apply(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     application = get_object_or_404(Application, job=job, applicant=request.user)
     return render(request, 'jobs/view_apply.html', {'application': application})
 
+@login_required
 def view_resume(request, application_id):
     from .models import Application
     app = Application.objects.filter(id=application_id, applicant=request.user).first()
@@ -186,6 +190,7 @@ def view_resume(request, application_id):
     response['X-Frame-Options'] = 'ALLOWALL'  # Allow it to be shown in <iframe>
     return response  
 
+@login_required
 def delete_apply(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     application = get_object_or_404(Application, job=job, applicant=request.user)
