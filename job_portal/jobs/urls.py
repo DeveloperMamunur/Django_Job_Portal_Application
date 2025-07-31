@@ -12,7 +12,7 @@ urlpatterns = [
     path('<int:job_id>/applicants/', views.job_applicants, name='job_applicants'),
     path('apply/<int:job_id>/', views.view_apply, name='view_apply'),
     path('view-resume/<int:application_id>/', views.view_resume, name='view_resume'),
-
+    path('download_resume/<int:application_id>/', views.download_resume, name='download_resume'),
 
     path('post/', views.post_job, name='post_job'),
     path('post/<int:job_id>/edit/', views.edit_job, name='edit_job_post'),
@@ -21,4 +21,7 @@ urlpatterns = [
 
     path('employer-dashboard/', views.employer_dashboard, name='employer_dashboard'),
     path('applicant-dashboard/', views.applicant_dashboard, name='applicant_dashboard'),
+
+    path('post/approved/<int:application_id>/', views.approve_application, name='approve_application'),
+    path('post/rejected/<int:application_id>/', views.reject_application, name='reject_application')
 ]

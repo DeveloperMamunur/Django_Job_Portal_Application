@@ -1,5 +1,5 @@
 {% extends 'base-dashboard.html' %}
-
+{% load custom_tags %}
 {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -18,6 +18,8 @@
                         <th>Applied Date</th>
                         <th>Resume</th>
                         <th>Cover Letter</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,6 +33,7 @@
                             <td>
                                 {% if application.resume %}
                                     <a href="{{ application.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm">View Resume</a>
+                                    <a href="{% url 'download_resume' application.id %}" class="btn btn-outline-secondary btn-sm" download="{{ application.resume.name|basename }}">Download</a>
                                 {% else %}
                                     No resume uploaded
                                 {% endif %}
@@ -39,6 +42,25 @@
                                 <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#coverLetterModal{{ application.id }}">
                                     View Cover Letter
                                 </button>
+                            </td>
+                            <td>
+                                {% if application.status == 'approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif application.status == 'rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if application.status == 'pending' %}
+                                    <a href="{% url 'approve_application' application.id %}" class="btn btn-outline-success btn-sm">Approve</a>
+                                    <a href="{% url 'reject_application' application.id %}" class="btn btn-outline-danger btn-sm">Reject</a>
+                                {% elif application.status == 'approved' %}
+                                    <a href="{% url 'reject_application' application.id %}" class="btn btn-outline-danger btn-sm">Reject</a>
+                                {% elif application.status == 'rejected' %}
+                                    <a href="{% url 'approve_application' application.id %}" class="btn btn-outline-success btn-sm">Approve</a>
+                                {% endif %}
                             </td>
                         </tr>
                         

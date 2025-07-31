@@ -24,9 +24,17 @@ def applicant_dashboard(request):
     if request.user.profile.role != 'applicant':
         messages.error(request, 'Access denied. Applicants only.')
         return redirect('home')
-    
+
+    status_filter = request.GET.get('status')
     applications = Application.objects.filter(applicant=request.user)
-    return render(request, 'jobs/applicant_dashboard.html', {'applications': applications})
+
+    if status_filter in ['pending', 'approved', 'rejected']:
+        applications = applications.filter(status=status_filter)
+
+    return render(request, 'jobs/applicant_dashboard.html', {
+        'applications': applications,
+        'status_filter': status_filter
+    })
 
 @login_required
 def post_job(request):
@@ -209,3 +217,33 @@ def job_applicants(request, job_id):
     applications = Application.objects.filter(job=job)
     
     return render(request, 'jobs/job_applicants.html', {'job': job, 'applications': applications})
+
+@login_required
+def approve_application(request, application_id):
+    application = get_object_or_404(Application, id=application_id, job__posted_by=request.user)
+    application.status = 'approved'
+    application.save()
+    messages.success(request, 'Application approved successfully!')
+    return redirect('job_applicants', job_id=application.job.id)
+
+@login_required
+def reject_application(request, application_id):
+    application = get_object_or_404(Application, id=application_id, job__posted_by=request.user)
+    application.status = 'rejected'
+    application.save()
+    messages.success(request, 'Application rejected successfully!')
+    return redirect('job_applicants', job_id=application.job.id)
+
+def download_resume(request, application_id):
+    from .models import Application
+    app = Application.objects.filter(id=application_id).first()
+    if not app or not app.resume:
+        raise Http404("Resume not found")
+
+    resume_path = app.resume.path
+    if not os.path.exists(resume_path):
+        raise Http404("File does not exist")
+
+    response = FileResponse(open(resume_path, 'rb'), content_type='application/pdf')
+    response['X-Frame-Options'] = 'ALLOWALL'  # Allow it to be shown in <iframe>
+    return response
